@@ -14,7 +14,7 @@ ppx, ppy = 0, 0
 # 2 - ENEMY
 
 # Generate board as an aray
-board = [[0]*rows]*cols
+board = [[0 for i in range(rows)] for j in range(cols)]
 
 # print(f'px = {px}, py = {py}')
 
@@ -22,7 +22,7 @@ board = [[0]*rows]*cols
 def charpos():
     global ppx, ppy, board
     board[px][py] = 1
-    board[ppx][ppy] = 2
+    board[ppx][ppy] = 0
     ppx = px
     ppy = py
 
@@ -35,25 +35,8 @@ def render():
             print(x, end='')
         print()
 
-
-print(board[0])
-print(board[1][1])
-
-board[1][1] = 1
-
-print(board[0])
-print(board[1][1])
-
-print(board)
-
 # Generate Character
-# charpos()
+charpos()
 
 # Render initial board
-# render()
-
-rboard = zip(*board[::-1])
-for y in rboard:
-    for x in y:
-        print(x, end='')
-    print()
+render()
