@@ -1,27 +1,37 @@
 class Enemy:
-    x, y = 0, 0
-    px, py = 0, 0
+    # previous x, y
+    prex, prey = 0, 0
 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, x=False, y=False):
+        if not x:
+            self.x = 5
+        else:
+            self.x = x
 
-    def move(dist, px, py):
+        if not y:
+            self.y = 5
+        else:
+            self.y = y
+
+    def __sub__(self, other):
+        return (self.x-other.x, self.y-other.y)
+
+    def move(self, dist, px, py):
         i = 0
         while (i < dist):
-            if (px > x):
+            if (px > self.x):
                 x -= 1
                 i += 1
                 break
-            elif (px < x):
+            elif (px < self.x):
                 x += 1
                 i += 1
                 break
-            if (py > x):
+            if (py > self.y):
                 y -= 1
                 i += 1
                 break
-            elif (py < x):
+            elif (py < self.y):
                 y += 1
                 i += 1
                 break

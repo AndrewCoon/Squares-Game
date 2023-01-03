@@ -23,7 +23,7 @@ ppx, ppy = 0, 0
 # Generate board as an list [x][y]
 board = [[0 for i in range(cols)] for j in range(rows)]
 
-enemy1 = Enemy(5, 5)
+enemy1 = Enemy()
 enemies = {enemy1}
 
 
@@ -104,17 +104,25 @@ def invalid():
 
 
 def enemypos():
-    global board
+    global board, px, py
 
     for e in enemies:
         board[e.y][e.x] = 2
-        board[e.py][e.px] = 0
-        e.px = e.x
-        e.py = e.y
+        board[e.prey][e.prex] = 0
+        e.prex = e.x
+        e.prey = e.y
+    enemymove()
+
+
+def enemymove():
+    global px, py
+    for e in enemies:
+        e.move(1, px, py)
 
 
 def update():
     charpos()
+    enemypos()
     clear_console()
     render()
 
@@ -124,26 +132,32 @@ update()
 
 
 while (not gameover):
-    move = input('Inputs are: \nd: down 1\nu: up 1\nl: left 1\nr: right 1\n')
+    move = input(
+        'Inputs are: \ns: down 1\nw: up 1\na: left 1\nd: right 1\n')
 
-    if (move == 'd'):
-        if (not movedown(1)):
+    if (move == 's'):
+        if (movedown(1)):
+            update()
+        else:
             invalid()
-    elif (move == 'u'):
-        if (not movedown(1)):
+    elif (move == 'w'):
+        if (moveup(1)):
+            update()
+        else:
             invalid()
-    elif (move == 'l'):
-        if (not movedown(1)):
+    elif (move == 'a'):
+        if (moveleft(1)):
+            update()
+        else:
             invalid()
-    elif (move == 'r'):
-        if (not movedown(1)):
+    elif (move == 'd'):
+        if (moveright(1)):
+            update()
+        else:
             invalid()
     elif (move == 'endgame'):
         gameover = True
     else:
         invalid()
 
-    for e in enemies:
-        e.move(1, px, py)
-    enemypos()
-    update()
+    # update()
