@@ -1,13 +1,14 @@
-class Enemie:
+class Enemy:
     x, y = 0, 0
+    px, py = 0, 0
 
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-    def move(speed, px, py):
+    def move(dist, px, py):
         i = 0
-        while (i < speed):
+        while (i < dist):
             if (px > x):
                 x -= 1
                 i += 1

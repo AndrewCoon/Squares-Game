@@ -2,7 +2,7 @@ import sys
 from random import random
 import os
 import platform
-import Enemy
+from Enemy import Enemy
 
 SYSTEM = platform.system()
 TEST = True
@@ -22,12 +22,13 @@ ppx, ppy = 0, 0
 
 # Generate board as an list [x][y]
 board = [[0 for i in range(cols)] for j in range(rows)]
-enemies = {}
-enemy1 = Enemy(random.randint(5, 9), random.randint(5, 9))
+
+enemy1 = Enemy(5, 5)
+enemies = {enemy1}
 
 
 def charpos():
-    global ppx, ppy, board
+    global ppx, ppy, board, px, py
     if (TEST):
         print(f'px = {px}, py = {py}\n')
     board[py][px] = 1
@@ -102,6 +103,16 @@ def invalid():
     print('Invalid move, try again')
 
 
+def enemypos():
+    global board
+
+    for e in enemies:
+        board[e.y][e.x] = 2
+        board[e.py][e.px] = 0
+        e.px = e.x
+        e.py = e.y
+
+
 def update():
     charpos()
     clear_console()
@@ -116,24 +127,16 @@ while (not gameover):
     move = input('Inputs are: \nd: down 1\nu: up 1\nl: left 1\nr: right 1\n')
 
     if (move == 'd'):
-        if (movedown(1)):
-            update()
-        else:
+        if (not movedown(1)):
             invalid()
     elif (move == 'u'):
-        if (moveup(1)):
-            update()
-        else:
+        if (not movedown(1)):
             invalid()
     elif (move == 'l'):
-        if (moveleft(1)):
-            update()
-        else:
+        if (not movedown(1)):
             invalid()
     elif (move == 'r'):
-        if (moveright(1)):
-            update()
-        else:
+        if (not movedown(1)):
             invalid()
     elif (move == 'endgame'):
         gameover = True
@@ -141,4 +144,6 @@ while (not gameover):
         invalid()
 
     for e in enemies:
-        e.move()
+        e.move(1, px, py)
+    enemypos()
+    update()
