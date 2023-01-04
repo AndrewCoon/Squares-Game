@@ -22,16 +22,12 @@ class Enemy:
             if (px > self.x):
                 self.x += 1
                 i += 1
-                break
             elif (px < self.x):
                 self.x -= 1
                 i += 1
-                break
             if (py > self.y):
                 self.y += 1
                 i += 1
-                break
             elif (py < self.y):
                 self.y -= 1
                 i += 1
-                break

@@ -5,7 +5,7 @@ import platform
 from Enemy import Enemy
 
 SYSTEM = platform.system()
-TEST = True
+TEST = False
 
 gameover = False
 rows, cols = 10, 10
@@ -39,9 +39,6 @@ def charpos():
 
 def render():
     global rows, cols, board
-    # rboard = list(zip(*board[::-1]))
-    # rrboard = list(zip(*rboard[::-1]))
-    # rrrboard = list(zip(*rboard[::-1]))
     print('----------------------')
     for y in board:
         print(end='|')
@@ -111,7 +108,6 @@ def enemypos():
         board[e.prey][e.prex] = 0
         e.prex = e.x
         e.prey = e.y
-    enemymove()
 
 
 def enemymove():
@@ -120,11 +116,22 @@ def enemymove():
         e.move(1, px, py)
 
 
+def checkcollisions():
+    global px, py, enemies, board, gameover
+    for e in enemies:
+        if (e.x == px and e.y == py):
+            render()
+            gameover = True
+
+
 def update():
-    charpos()
+    enemymove()
     enemypos()
+    charpos()
+    checkcollisions()
     clear_console()
-    render()
+    if not gameover:
+        render()
 
 
 # Initial update
@@ -160,4 +167,7 @@ while (not gameover):
     else:
         invalid()
 
-    # update()
+again = input('Game Over, play again? (Y/N): ')
+
+if (again == 'y' or again == 'Y'):
+    os.system('python .\Main.py')
