@@ -14,20 +14,23 @@ class Enemy:
             self.y = y
 
     def __sub__(self, other):
-        return (self.x-other.x, self.y-other.y)
+        return self.x - other.x, self.y - other.y
 
     def move(self, dist, px, py):
         i = 0
-        while (i < dist):
-            if (px > self.x):
+        while i < dist:
+            if px > self.x:
                 self.x += 1
                 i += 1
-            elif (px < self.x):
+            elif px < self.x:
                 self.x -= 1
                 i += 1
-            if (py > self.y):
+            if py > self.y:
                 self.y += 1
                 i += 1
-            elif (py < self.y):
+            elif py < self.y:
                 self.y -= 1
                 i += 1
+
+    def pos(self):
+        return self.x, self.y
