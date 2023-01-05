@@ -7,7 +7,7 @@
 
 ### Notes
  - Make a tile class
-   - Position
+   - Position (might not even need a position as it will be in the array)
    - State
      - Occupied
      - Render Text (toString maybe)
