@@ -12,7 +12,7 @@ class Tile:
     def __str__(self):
         return str(self.state)
 
-    def change_state(self, state):
+    def change_state(self, state: int):
         self.state = state
 
         print(f'state changed to {self.state}')

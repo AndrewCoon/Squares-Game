@@ -34,8 +34,9 @@ def set_charpos():
     global px, py, board, player_x, player_y
     if TEST:
         print(f'x = {player_x}, y = {player_y}\n')
-    board[player_y][player_x].state = 1
-    board[py][px].state = 0
+    board[player_y][player_x].change_state(1)
+    if not board[py][px].occupied:
+        board[py][px].change_state(0)
     px = player_x
     py = player_y
 
@@ -61,8 +62,7 @@ def render():
 
 def move_up(dist):
     global rows, cols, player_y, player_x
-    if player_y - dist >= 0:
-        player_y -= dist
+    player_y -= dist
 
 
 def move_down(dist):
