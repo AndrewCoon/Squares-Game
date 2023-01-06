@@ -14,34 +14,34 @@ rows, cols = 10, 10
 # player speed in tiles per turn
 speed = 1
 # Player x, Player y
-x, y = 1, 1
+player_x, player_y = 1, 1
 
 # Previous x, Previous y
-ppx, ppy = 0, 0
+px, py = 0, 0
 
 # 0 - EMPTY
 # 1 - PLAYER
 # 2 - ENEMY
 
 # Generate board as an list [x][y]
-board = [[0 for i in range(cols)] for j in range(rows)]
+board = [[Tile for i in range(cols)] for j in range(rows)]
 
 enemy1 = Enemy()
 enemies = {enemy1}
 
 
 def set_charpos():
-    global ppx, ppy, board, x, y
+    global px, py, board, player_x, player_y
     if TEST:
-        print(f'x = {x}, y = {y}\n')
-    board[y][x] = 1
-    board[ppy][ppx] = 0
-    ppx = x
-    ppy = y
+        print(f'x = {player_x}, y = {player_y}\n')
+    board[player_y][player_x].state = 1
+    board[py][px].state = 0
+    px = player_x
+    py = player_y
 
 
 def pos():
-    return x, y
+    return player_x, player_y
 
 
 def render():
@@ -50,63 +50,64 @@ def render():
     for yi in board:
         print(end='|')
         for xi in yi:
-            if xi == 0:
-                print(' ', end=' ')
+            if xi.occupied:
+                print(str(xi.state), end=' ')
             else:
-                print(xi, end=' ')
+                print(' ', end=' ')
+
         print(end='|\n')
     print('----------------------', end='\n\n')
 
 
 def move_up(dist):
-    global rows, cols, y, x
-    if y - dist >= 0:
-        y -= dist
+    global rows, cols, player_y, player_x
+    if player_y - dist >= 0:
+        player_y -= dist
 
 
 def move_down(dist):
-    global rows, cols, y, x
-    if y + dist < rows:
-        y += dist
+    global rows, cols, player_y, player_x
+    if player_y + dist < rows:
+        player_y += dist
 
 
 def move_left(dist):
-    global rows, cols, y, x
-    if x - dist >= 0:
-        x -= dist
+    global rows, cols, player_y, player_x
+    if player_x - dist >= 0:
+        player_x -= dist
 
 
 def move_right(dist):
-    global rows, cols, y, x
-    if x + dist < cols:
-        x += dist
+    global rows, cols, player_y, player_x
+    if player_x + dist < cols:
+        player_x += dist
 
 
 def attack_up(dist=1):
-    global y, x, enemies
+    global player_y, player_x, enemies
     for e in enemies:
-        if x == e.x and y + dist == e.y:
+        if player_x == e.x and player_y + dist == e.y:
             enemies.remove(e)
 
 
 def attack_down(dist=1):
-    global y, x, enemies
+    global player_y, player_x, enemies
     for e in enemies:
-        if x == e.x and y - dist == e.y:
+        if player_x == e.x and player_y - dist == e.y:
             enemies.remove(e)
 
 
 def attack_left(dist=1):
-    global y, x, enemies
+    global player_y, player_x, enemies
     for e in enemies:
-        if y == e.y and x - dist == e.x:
+        if player_y == e.y and player_x - dist == e.x:
             enemies.remove(e)
 
 
 def attack_right(dist=1):
-    global y, x, enemies
+    global player_y, player_x, enemies
     for e in enemies:
-        if y == e.y and x + dist == e.x:
+        if player_y == e.y and player_x + dist == e.x:
             enemies.remove(e)
 
 
@@ -126,27 +127,29 @@ def invalid():
 
 
 def enemy_pos():
-    global board, x, y
+    global board, player_x, player_y
 
     for e in enemies:
-        board[e.y][e.x] = 2
-        board[e.prey][e.prex] = 0
+        board[e.y][e.x].state = 2
+        board[e.prey][e.prex].state = 0
         e.prex = e.x
         e.prey = e.y
 
 
 def enemy_move():
-    global x, y
+    global player_x, player_y
     for e in enemies:
-        e.move(1, x, y)
+        e.move(1, player_x, player_y)
 
 
 def check_collisions():
-    global x, y, enemies, board, game_over
+    global player_x, player_y, enemies, board, game_over
     for e in enemies:
         if pos() == e.pos():
             render()
             game_over = True
+
+
 
     # Player Move Codes:
     # 0 - Up
@@ -164,16 +167,16 @@ def check_collisions():
 def can_move(direction, dist):
     can = False
     if direction == 0:
-        if y + dist >= 0:
+        if player_y + dist >= 0:
             can = True
     elif direction == 1:
-        if y - dist < rows:
+        if player_y - dist < rows:
             can = True
     elif direction == 2:
-        if x - dist >= 0:
+        if player_x - dist >= 0:
             can = True
     elif direction == 3:
-        if y - dist > 0:
+        if player_y - dist > 0:
             can = True
     return can
 
@@ -181,16 +184,16 @@ def can_move(direction, dist):
 def can_attack(direction, dist):
     can = False
     if direction == 0:
-        if y + dist >= 0:
+        if player_y + dist >= 0:
             can = True
     elif direction == 1:
-        if y - dist < rows:
+        if player_y - dist < rows:
             can = True
     elif direction == 2:
-        if x - dist >= 0:
+        if player_x - dist >= 0:
             can = True
     elif direction == 3:
-        if y - dist > 0:
+        if player_x + dist < cols:
             can = True
     if not can:
         invalid()
@@ -235,35 +238,35 @@ def turn():
     global game_over
 
     move = input(
-        'Inputs are: \ns: down 1\nw: up 1\na: left 1\nd: right 1\n\nS: attack down 1\nW: attack up 1\nA: attack left '
-        '1\nd: attack right 1\n')
+        'Inputs are: \ns: down 1\nw: up 1\na: left 1\nd: right 1\n\nas: attack down 1\naw: attack up 1\naa: attack left '
+        '1\nad: attack right 1\n')
 
     # Move
     if move == 'w':
         if can_move(0, speed):
             player_action(0)
-    elif move == 'a':
-        if can_move(3, speed):
-            player_action(3)
     elif move == 's':
         if can_move(1, speed):
             player_action(1)
-    elif move == 'd':
+    elif move == 'a':
         if can_move(2, speed):
             player_action(2)
+    elif move == 'd':
+        if can_move(3, speed):
+            player_action(3)
     # Attack
-    elif move == 'W':
+    elif move == 'aw':
         if can_move(10, speed):
             player_action(10)
-    elif move == 'A':
-        if can_move(13, speed):
-            player_action(13)
-    elif move == 'S':
+    elif move == 'as':
         if can_move(11, speed):
             player_action(11)
-    elif move == 'D':
+    elif move == 'aa':
         if can_move(12, speed):
             player_action(12)
+    elif move == 'ad':
+        if can_move(13, speed):
+            player_action(13)
     elif move == 'endgame':
         game_over = True
     else:
@@ -272,35 +275,9 @@ def turn():
 
 while not game_over:
     turn()
-    # move = input(
-    #    'Inputs are: \ns: down 1\nw: up 1\na: left 1\nd: right 1\n')
-    #
-    #    if (move == 's'):
-    #        if (movedown(1)):
-    #            update()
-    #        else:
-    #            invalid()
-    #    elif (move == 'w'):
-    #        if (moveup(1)):
-    #            update()
-    #        else:
-    #            invalid()
-    #    elif (move == 'a'):
-    #        if (moveleft(1)):
-    #            update()
-    #        else:
-    #            invalid()
-    # elif (move == 'd'):
-    #    if (moveright(1)):
-    #        update()
-    #    else:
-    #        invalid()
-    # elif (move == 'endgame'):
-    #    gameover = True
-    # else:
-    #    invalid()
+
 
 again = input('Game Over, play again? (Y/N): ')
 
 if again == 'y' or again == 'Y':
-    os.system('python ./Main.y')
+    os.system('python ./Main.py')

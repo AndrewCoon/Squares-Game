@@ -1,8 +1,22 @@
 class Tile:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.occupied = False
+    state = None
+    occupied = None
 
-    def pos(self):
-        return self.x, self.y
+    def __init__(self):
+        self.occupied = False
+        self.state = 0
+
+    def __int__(self):
+        return self.state
+
+    def __str__(self):
+        return str(self.state)
+
+    def change_state(self, state):
+        self.state = state
+
+        print(f'state changed to {self.state}')
+        if self.state == 0:
+            self.occupied = False
+        else:
+            self.occupied = True

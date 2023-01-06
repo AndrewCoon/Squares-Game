@@ -14,7 +14,7 @@ class Enemy:
             self.y = y
 
     def __sub__(self, other):
-        return self.x - other.x, self.y - other.y
+        return self.x - other.player_x, self.y - other.player_y
 
     def move(self, dist, px, py):
         i = 0
@@ -31,6 +31,7 @@ class Enemy:
             elif py < self.y:
                 self.y -= 1
                 i += 1
+
 
     def pos(self):
         return self.x, self.y
