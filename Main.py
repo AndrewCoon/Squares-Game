@@ -4,7 +4,6 @@ import platform
 from Enemy import Enemy
 from Tile import Tile
 
-
 SYSTEM = platform.system()
 TEST = False
 
@@ -34,9 +33,10 @@ def set_charpos():
     global px, py, board, player_x, player_y
     if TEST:
         print(f'x = {player_x}, y = {player_y}\n')
-    board[player_y][player_x].change_state(1)
+    board[player_y][player_x].occupied = True
+    board[player_y][player_x].state = 1
     if not board[py][px].occupied:
-        board[py][px].change_state(0)
+        board[py][px].state = 0
     px = player_x
     py = player_y
 
@@ -48,13 +48,15 @@ def pos():
 def render():
     global rows, cols, board
     print('----------------------')
-    for yi in board:
+    for y in board:
         print(end='|')
-        for xi in yi:
-            if xi.occupied:
-                print(str(xi.state), end=' ')
-            else:
-                print(' ', end=' ')
+        for x in y:
+            # xi.update_state(xi)
+            print(x.state, end=' ')
+            # if xi.occupied:
+            #     print(str(xi.state), end=' ')
+            # else:
+            #     print(' ', end=' ')
 
         print(end='|\n')
     print('----------------------', end='\n\n')
@@ -130,8 +132,10 @@ def enemy_pos():
     global board, player_x, player_y
 
     for e in enemies:
+        board[e.y][e.x].occupied = True
         board[e.y][e.x].state = 2
-        board[e.prey][e.prex].state = 0
+        if not board[e.prey][e.prex].occupied:
+            board[e.prey][e.prex].state = 0
         e.prex = e.x
         e.prey = e.y
 
@@ -148,8 +152,6 @@ def check_collisions():
         if pos() == e.pos():
             render()
             game_over = True
-
-
 
     # Player Move Codes:
     # 0 - Up
@@ -275,7 +277,6 @@ def turn():
 
 while not game_over:
     turn()
-
 
 again = input('Game Over, play again? (Y/N): ')
 
